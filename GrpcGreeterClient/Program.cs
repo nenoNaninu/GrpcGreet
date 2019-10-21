@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Threading.Channels;
 using GrpcGreeter;
 using Grpc.Net.Client;
 using System.Threading.Tasks;
+using Grpc.Core;
 
 namespace GrpcGreeterClient
 {
@@ -9,7 +11,15 @@ namespace GrpcGreeterClient
     {
         static async Task Main(string[] args)
         {
-            var channel = GrpcChannel.ForAddress("https://localhost:5001");
+            //for mac
+            AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+            
+            var channel = GrpcChannel.ForAddress("http://localhost:5000");
+//            var channel = GrpcChannel.ForAddress("http://localhost:5000",new GrpcChannelOptions
+//            {
+//                Credentials = ChannelCredentials.Insecure
+//            });
+            
             var client = new Greeter.GreeterClient(channel);
                 
             var reply = await client.SayHelloAsync(
